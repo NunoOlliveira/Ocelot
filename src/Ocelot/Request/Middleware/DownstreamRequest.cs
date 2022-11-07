@@ -42,13 +42,14 @@ namespace Ocelot.Request.Middleware
 
         public HttpRequestMessage ToHttpRequestMessage()
         {
-            var uriBuilder = new UriBuilder
+            Uri uri = new Uri(new UriBuilder() { Host = Host, Scheme = Scheme }.ToString());
+            UriBuilder uriBuilder = new UriBuilder
             {
-                Port = Port,
-                Host = Host,
-                Path = AbsolutePath,
+                Host = uri.Host,
+                Path = (!string.IsNullOrEmpty(uri.AbsolutePath) && uri.AbsolutePath.Length > 3) ? $"{uri.AbsolutePath[1..^1]}{AbsolutePath}" : AbsolutePath,
                 Query = RemoveLeadingQuestionMark(Query),
-                Scheme = Scheme
+                Scheme = Scheme,
+                Port = Port,
             };
 
             _request.RequestUri = uriBuilder.Uri;
@@ -58,13 +59,14 @@ namespace Ocelot.Request.Middleware
 
         public string ToUri()
         {
-            var uriBuilder = new UriBuilder
+            Uri uri = new Uri(new UriBuilder() { Host = Host, Scheme = Scheme }.ToString());
+            UriBuilder uriBuilder = new UriBuilder
             {
-                Port = Port,
-                Host = Host,
-                Path = AbsolutePath,
+                Host = uri.Host,
+                Path = (!string.IsNullOrEmpty(uri.AbsolutePath) && uri.AbsolutePath.Length > 3) ? $"{uri.AbsolutePath[1..^1]}{AbsolutePath}" : AbsolutePath,
                 Query = RemoveLeadingQuestionMark(Query),
-                Scheme = Scheme
+                Scheme = Scheme,
+                Port = Port,
             };
 
             return uriBuilder.Uri.AbsoluteUri;
